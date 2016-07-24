@@ -1,0 +1,1 @@
+INSERT INTO USER( id, created, first_name, last_name, username ) VALUES ( 1,  '2016-07-24 00:00:00',  'Vishnu',  'Saini',  'vs' );

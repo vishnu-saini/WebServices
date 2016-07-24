@@ -7,13 +7,17 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="user")
@@ -33,11 +37,8 @@ public class User {
 	@Column(name="last_name")
 	private String lastName;
 	
-	@Transient
-	private String unUsedFeild;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL,mappedBy="user")
+	@OneToMany(cascade=CascadeType.ALL,mappedBy="user",fetch = FetchType.EAGER)
+	@JsonBackReference
 	private Set<Post> posts=new  HashSet<Post>();
 	
 	/*
@@ -76,6 +77,7 @@ public class User {
 	public void setCreated(Date created) {
 		this.created = created;
 	}
+	
 	public Set<Post> getPosts() {
 		return posts;
 	}

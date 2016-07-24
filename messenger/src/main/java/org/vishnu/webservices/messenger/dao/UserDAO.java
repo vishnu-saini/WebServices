@@ -9,50 +9,55 @@ import org.vishnu.webservices.messenger.utils.HibernateUtil;
 
 public class UserDAO {
 
-	public void addUser(User user) {
+	public User addUser(User user) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
 		session.save(user);
 		session.getTransaction().commit();
 		session.close();
-	}
-
-	public User getUser(String username) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		session.beginTransaction();/* lets hope an id of 1 exists! */
-		String queryString = "from User where username = :username";
-		Query query = session.createQuery(queryString);
-		query.setString("username", username);
-		Object queryResult = query.uniqueResult();
-		User user = (User) queryResult;
-		session.getTransaction().commit();
 		return user;
 	}
-
-	public void deleteUser(User user) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		session.beginTransaction();
-		session.delete(user);
-		session.getTransaction().commit();
-		session.close();
-	}
-
-	public void updateUser(User user) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		session.beginTransaction();
-		User user1 = session.get(User.class, user.getId());
-		user1.setFirstName(user.getFirstName());
-		user1.setLastName(user.getFirstName());
-		user1.setUsername(user.getFirstName());
-		session.getTransaction().commit();
-		session.close();
-	}
-
+	
 	public List<User> getAllUsers() {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
-		List<User> allUsers = (List<User>) session.createQuery("from User").list();
+		List<User> allUsers =session.createCriteria(User.class).list();
 		session.getTransaction().commit();
+		session.close();
 		return allUsers;
+	}
+	
+	public User updateUser(User user) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+		User user1 = (User) session.get(User.class, user.getId());
+		user1.setFirstName(user.getFirstName());
+		user1.setLastName(user.getLastName());
+		user1.setUsername(user.getUsername());
+		session.getTransaction().commit();
+		session.close();
+		return user1;
+	}
+	
+	public boolean deleteUser(long id) {
+
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+		User user = (User)session.load(User.class,id);
+	    session.delete(user);
+		session.getTransaction().commit();
+		session.close();
+		return true;
+	}
+
+	public User getUser(long id) {
+		User user;
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+		user = (User)session.get(User.class,id);
+		session.getTransaction().commit();
+		session.close();
+		System.out.println(user.getFirstName());
+		return user;
 	}
 }

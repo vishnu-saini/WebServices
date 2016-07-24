@@ -8,42 +8,55 @@ import org.vishnu.webservices.messenger.model.Post;
 import org.vishnu.webservices.messenger.model.User;
 import org.vishnu.webservices.messenger.utils.HibernateUtil;
 
+import com.sun.org.apache.regexp.internal.recompile;
+
 public class PostDAO {
 
-	public void addPost(Post post) {
+	public Post addPost(Post post) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
 		session.save(post);
 		session.getTransaction().commit();
 		session.close();
-	}
-
-	public List<Post> getAllPosts() {
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		session.beginTransaction();
-		List<Post> allPosts = (List<Post>) session.createQuery("from Post").list();
-		session.getTransaction().commit();
-		return allPosts;
-	}
-
-	public Post getPost(long id) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		session.beginTransaction();
-		Post post = (Post) session.get(Post.class, id);
-		session.getTransaction().commit();
 		return post;
 	}
 
-	public List<Post> getPostByUser(String username) {
-
+	public Post getPost(long postId) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+		Post post =  (Post) session.get(Post.class, postId);
+		session.getTransaction().commit();
+		session.close();
+		return post;
 	}
 
-	public void deletePost(long id) {
-
+	public void deletePost(Post post) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+		session.delete(post);
+		session.getTransaction().commit();
+		session.close();
 	}
 
 	public void updatePost(Post post) {
-
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+		Post post1 = (Post) session.get(Post.class, post.getId());
+		post1.setMessage(post.getMessage());
+		session.getTransaction().commit();
+		session.close();
 	}
 
+/*	public List<User> getAllPostOfUser() {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+		String queryString = "from Post where username = :username";
+		Query query = session.createQuery(queryString);
+		query.setString("username", username);
+		Object queryResult = query.uniqueResult();
+		User user = (User) queryResult;
+		session.getTransaction().commit();
+		session.close();
+		return user;
+	}*/
 }
